@@ -14,14 +14,16 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let command = parse_args(&args);
 
-    let results = match command {
+    let _results = match command {
         Command::Init => handle_init(),
         Command::History => {
-            let snapshots = load_snapshots()?;
+            let mut snapshots = load_snapshots()?;
             handle_history(&snapshots)
-        },
-        // Command::Save { message } => handle_save(message),
-        _ => Ok(()),
+        }
+        Command::Save { message } => {
+            let mut snapshots = load_snapshots()?;
+            handle_save(&mut snapshots, message)
+        }
     }?;
     Ok(())
 }
