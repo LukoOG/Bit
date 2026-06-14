@@ -5,6 +5,7 @@ mod commands;
 mod models;
 mod storage;
 mod filesystem;
+mod hash;
 
 use cli::parse_args;
 use commands::{Command, history::handle_history, init::handle_init, save::handle_save};
@@ -29,7 +30,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     }?;
     let files = collect_files()?;
     for file in files {
-        println!("{:?}", file)
+        println!("{:?}", file.display())
     }
     Ok(())
 }
