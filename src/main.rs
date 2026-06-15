@@ -9,11 +9,11 @@ mod storage;
 
 use cli::parse_args;
 use commands::{Command, history::handle_history, init::handle_init, save::handle_save};
-use filesystem::collect_files;
+use filesystem::{collect_files, store_object};
 use hash::hash_file;
+use models::{FileEntry};
 use storage::load_snapshots;
 
-use crate::{filesystem::store_object, models::FileEntry};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
