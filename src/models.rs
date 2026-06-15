@@ -2,8 +2,8 @@ use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FileEntry {
-    hash: String,
-    path: String,
+    pub hash: String,
+    pub path: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

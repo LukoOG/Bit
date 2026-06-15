@@ -2,16 +2,18 @@ use std::{env, error::Error};
 
 mod cli;
 mod commands;
-mod models;
-mod storage;
 mod filesystem;
 mod hash;
+mod models;
+mod storage;
 
 use cli::parse_args;
 use commands::{Command, history::handle_history, init::handle_init, save::handle_save};
-use storage::load_snapshots;
 use filesystem::collect_files;
 use hash::hash_file;
+use storage::load_snapshots;
+
+use crate::{filesystem::store_object, models::FileEntry};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
@@ -26,16 +28,28 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
         Command::Save { message } => {
             let mut snapshots = load_snapshots()?;
-            handle_save(&mut snapshots, message)
+            let files = collect_files()?;
+            let mut entries: Vec<FileEntry> = Vec::new();
+            {
+                for file in files {
+                    let (hash, contents) = hash_file(&file)?;
+                    store_object(&hash, &contents)?;
+                    entries.push(FileEntry {
+                        path: file.to_string_lossy().to_string(),
+                        hash
+                    });
+                };
+            };
+            handle_save(&mut snapshots, message, entries)
         }
     }?;
 
     //testing stuff
-    let files = collect_files()?;
-    for file in &files[0..7] {
-        let (hash, _) = hash_file(file)?;
-        println!("{:?}", file.display());
-        println!("hash: {}\n", hash)
-    }
+    // let files = collect_files()?;
+    // for file in &files[0..7] {
+    //     let (hash, _) = hash_file(file)?;
+    //     println!("{:?}", file.display());
+    //     println!("hash: {}\n", hash)
+    // }
     Ok(())
 }
