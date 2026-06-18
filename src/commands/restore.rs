@@ -14,12 +14,8 @@ pub fn handle_restore(snapshots: &[Snapshot], snapshot_id: u32) -> Result<(), Bo
     for FileEntry { path, hash } in snapshot.files.iter() {
         let object_path = format!(".snapr/objects/{}", hash);
 
-        if !Path::new(&object_path).exists() {
-            return Err(format!("Missing object: {}", hash).into())
-        }
-
         println!("{:?} {:?}", &object_path, path);
-        let contents = fs::read(&object_path)?;
+        let contents = fs::read(&object_path).map_err(|_| format!("Missing object: {}", hash))?;
 
         if let Some(parent) = Path::new(path).parent() {
             fs::create_dir_all(parent)?;
