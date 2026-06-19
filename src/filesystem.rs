@@ -5,7 +5,7 @@ use std::{
 };
 use walkdir::{DirEntry, WalkDir};
 
-use crate::hash::hash_file;
+use crate::hash::{hash_and_get_contents};
 use crate::models::FileEntry;
 
 fn should_skip(entry: &DirEntry) -> bool {
@@ -57,7 +57,7 @@ pub fn build_entries() -> Result<Vec<FileEntry>, Box<dyn Error>> {
     let mut entries: Vec<FileEntry> = Vec::new();
     {
         for file in files {
-            let (hash, contents) = hash_file(&file)?;
+            let (hash, contents) = hash_and_get_contents(&file)?;
             store_object(&hash, &contents)?;
             entries.push(FileEntry {
                 path: file.to_string_lossy().to_string(),

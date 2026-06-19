@@ -11,12 +11,26 @@ use sha2::{Digest, Sha256};
 //     Ok(result.iter().map(|byte| format!("{:02x}", byte)).collect())
 // }
 
-
 //split hashing and file loading responsibility later
-pub fn hash_file(path: &Path) -> Result<(String, Vec<u8>), Box<dyn Error>> {
+pub fn hash_and_get_contents(path: &Path) -> Result<(String, Vec<u8>), Box<dyn Error>> {
     let mut hasher = Sha256::new();
     let contents = fs::read(path)?;
     hasher.update(&contents);
     let result = hasher.finalize();
     Ok((hex::encode(result), contents))
+}
+
+pub fn hash_file(path: &Path) -> Result<String, Box<dyn Error>> {
+    let mut hasher = Sha256::new();
+    let contents = fs::read(path)?;
+    hasher.update(&contents);
+    let result = hasher.finalize();
+    Ok(hex::encode(result))
+}
+
+pub fn hash_file_bytes(bytes: &[u8]) -> Result<String, Box<dyn Error>> {
+    let mut hasher = Sha256::new();
+    hasher.update(bytes);
+    let result = hasher.finalize();
+    Ok(hex::encode(result))
 }

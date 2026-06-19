@@ -41,13 +41,5 @@ fn main() -> Result<(), Box<dyn Error>> {
             handle_restore(&snapshots, snapshot_id)
         }
     }?;
-
-    //testing stuff
-    // let files = collect_files()?;
-    // for file in &files[0..7] {
-    //     let (hash, _) = hash_file(file)?;
-    //     println!("{:?}", file.display());
-    //     println!("hash: {}\n", hash)
-    // }
     Ok(())
 }

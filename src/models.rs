@@ -12,3 +12,8 @@ pub struct Snapshot {
     pub message: String,
     pub files: Vec<FileEntry>,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct SnaprConfig {
+    version: u32
+}
