@@ -10,12 +10,10 @@ mod storage;
 
 use cli::parse_args;
 use commands::{
-    Command, diff::handle_diff, history::handle_history, init::handle_init, save::handle_save,
+    Command, diff::handle_diff, history::handle_history, init::handle_init, save::handle_save, restore::handle_restore, status::handle_status
 };
 use filesystem::build_entries;
 use storage::load_snapshots;
-
-use crate::commands::restore::handle_restore;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
@@ -40,6 +38,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::Restore(snapshot_id) => {
             let snapshots = load_snapshots()?;
             handle_restore(&snapshots, snapshot_id)
+        }
+        Command::Status => {
+            let snapshots = load_snapshots()?;
+            let entries = build_entries()?; //current workspace entries
+            handle_status(&snapshots, entries)
         }
     }?;
     Ok(())

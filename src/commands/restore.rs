@@ -55,6 +55,7 @@ pub fn handle_restore(snapshots: &[Snapshot], snapshot_id: u32) -> Result<(), Bo
     println!("Restored snapshot {}\n", snapshot_id);
     println!("{} files restored", restored);
     println!("{} files skipped", skipped);
+    // println!("{} files deleted", deleted);
 
     //config
     config.set_current_snapshot(snapshot_id);

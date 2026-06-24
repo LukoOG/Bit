@@ -20,6 +20,7 @@ pub fn hash_and_get_contents(path: &Path) -> Result<(String, Vec<u8>), Box<dyn E
     Ok((hex::encode(result), contents))
 }
 
+#[allow(unused)]
 pub fn hash_file(path: &Path) -> Result<String, Box<dyn Error>> {
     let mut hasher = Sha256::new();
     let contents = fs::read(path)?;

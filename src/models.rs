@@ -19,12 +19,27 @@ pub struct SnaprConfig {
     pub current_snapshot: Option<u32>,
 }
 
+impl Snapshot {
+    //Only the files field is actually needed
+    pub fn build_workspace(entries: Vec<FileEntry>) -> Self {
+        Self {
+            id: 0,
+            message: "current workspace".into(),
+            files: entries
+        }
+    }
+}
+
 impl SnaprConfig {
     pub fn new() -> Self {
         SnaprConfig {
             version: 1,
             current_snapshot: None,
         }
+    }
+
+    pub fn get_current_snapshot(&self) -> u32 {
+        self.current_snapshot.unwrap()
     }
 
     pub fn update_current_snapshot(&mut self) {
