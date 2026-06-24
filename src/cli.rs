@@ -50,6 +50,9 @@ pub fn parse_args(args: &[String]) -> Command {
                 std::process::exit(1);
             }
         }
-        _ => Command::Init,
+        _ => {
+            eprintln!("Unknown Command!");
+            std::process::exit(1)
+        },
     }
 }

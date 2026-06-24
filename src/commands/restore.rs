@@ -26,7 +26,7 @@ pub fn handle_restore(snapshots: &[Snapshot], snapshot_id: u32) -> Result<(), Bo
         println!("Already on snapshot {}", snapshot_id);
         return Ok(());
     }
-    
+
     let snapshot = snapshots
         .iter()
         .find(|s| s.id == snapshot_id)
@@ -56,6 +56,7 @@ pub fn handle_restore(snapshots: &[Snapshot], snapshot_id: u32) -> Result<(), Bo
     println!("{} files restored", restored);
     println!("{} files skipped", skipped);
 
+    //config
     config.set_current_snapshot(snapshot_id);
     save_config(&config)?;
     Ok(())

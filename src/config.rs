@@ -7,7 +7,8 @@ pub fn load_config() -> Result<SnaprConfig, Box<dyn std::error::Error>> {
         return Ok(SnaprConfig::new());
     }
 
-    let config: SnaprConfig = serde_json::from_str(file_path)?;
+    let contents = fs::read_to_string(file_path)?;
+    let config: SnaprConfig = serde_json::from_str(&contents)?;
     Ok(config)
 }
 
