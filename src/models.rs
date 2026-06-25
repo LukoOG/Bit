@@ -38,9 +38,9 @@ impl SnaprConfig {
         }
     }
 
-    pub fn get_current_snapshot(&self) -> u32 {
-        self.current_snapshot.unwrap()
-    }
+    // pub fn get_current_snapshot(&self) -> u32 {
+    //     self.current_snapshot.unwrap()
+    // }
 
     pub fn update_current_snapshot(&mut self) {
         match self.current_snapshot {
