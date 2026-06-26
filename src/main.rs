@@ -7,6 +7,7 @@ mod filesystem;
 mod hash;
 mod models;
 mod storage;
+mod constants;
 
 use cli::parse_args;
 use commands::{

@@ -1,4 +1,9 @@
 use serde::{Deserialize, Serialize};
+#[repr(u8)]
+pub enum CompressionType {
+    None = 0,
+    Zstd = 1,
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FileEntry {
@@ -17,6 +22,10 @@ pub struct Snapshot {
 pub struct SnaprConfig {
     version: u32,
     pub current_snapshot: Option<u32>,
+}
+
+pub struct StoreResult {
+
 }
 
 impl Snapshot {

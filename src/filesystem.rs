@@ -6,8 +6,12 @@ use std::{
 use walkdir::{DirEntry, WalkDir};
 use zstd::{decode_all, stream::encode_all};
 
-use crate::hash::hash_and_get_contents;
 use crate::models::FileEntry;
+use crate::{
+    constants::{FLAG_NONE, HEADER_SIZE, MAGIC, VERSION_1},
+    hash::hash_and_get_contents,
+    models::CompressionType,
+};
 
 fn should_skip(entry: &DirEntry) -> bool {
     let name = entry.file_name().to_str();
@@ -48,7 +52,15 @@ pub fn store_object(hash: &str, contents: &[u8]) -> Result<bool, Box<dyn Error>>
         return Ok(false);
     }
     let compressed = encode_all(contents, 3)?;
-    fs::write(path, compressed)?;
+    let mut object = Vec::<u8>::with_capacity(HEADER_SIZE + compressed.len());
+    object.extend_from_slice(MAGIC);
+    object.push(VERSION_1);
+    object.push(FLAG_NONE);
+    object.push(CompressionType::Zstd as u8);
+    object.extend_from_slice(&(contents.len()).to_le_bytes());
+    object.extend_from_slice(&compressed);
+
+    fs::write(path, object)?;
     Ok(true)
 }
 
@@ -69,8 +81,19 @@ pub fn build_entries() -> Result<Vec<FileEntry>, Box<dyn Error>> {
 }
 
 pub fn restore_file(path: &str, object_path: &str) -> Result<(), Box<dyn Error>> {
-    let compressed =
+    let object =
         fs::read(object_path).map_err(|_| format!("Missing object: {}", object_path))?;
+    if &object[..5] != MAGIC {
+        return Err("invalid object".into());
+    }
+
+    let version = object[5];
+    let flags = object[6];
+    let compression = object[7];
+
+    let original_size = u64::from_le_bytes(object[8..16].try_into()?);
+
+    let compressed = &object[HEADER_SIZE..];
     let contents = decode_all(&compressed[..])?;
 
     if let Some(parent) = Path::new(path).parent() {
