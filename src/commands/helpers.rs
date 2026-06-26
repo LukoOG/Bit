@@ -32,13 +32,13 @@ fn print_diff(diff: &DiffResult) {
     print_section("Removed", '-', &diff.removed);
 }
 
-pub(super) fn calculate_diff(old_snapshot: &Snapshot, new_snapshot: &Snapshot) -> DiffResult {
-    let old_map = old_snapshot
+pub(super) fn calculate_diff(from: &Snapshot, to: &Snapshot) -> DiffResult {
+    let source = from
         .files
         .iter()
         .map(|FileEntry { hash, path }| (path.clone(), hash.clone()))
         .collect::<HashMap<String, String>>();
-    let new_map = new_snapshot
+    let target = to
         .files
         .iter()
         .map(|FileEntry { hash, path }| (path.clone(), hash.clone()))
@@ -46,8 +46,8 @@ pub(super) fn calculate_diff(old_snapshot: &Snapshot, new_snapshot: &Snapshot) -
 
     let mut result = DiffResult::default();
 
-    for (path, hash) in new_map.iter() {
-        if let Some(old_hash) = old_map.get(path) {
+    for (path, hash) in target.iter() {
+        if let Some(old_hash) = source.get(path) {
             if hash != old_hash {
                 result.modified.push(path.clone());
             }
@@ -56,8 +56,8 @@ pub(super) fn calculate_diff(old_snapshot: &Snapshot, new_snapshot: &Snapshot) -
         }
     }
 
-    for path in old_map.keys() {
-        if !new_map.contains_key(path) {
+    for path in source.keys() {
+        if !target.contains_key(path) {
             result.removed.push(path.clone())
         }
     }

@@ -24,7 +24,7 @@ pub struct SnaprConfig {
     pub current_snapshot: Option<u32>,
 }
 
-pub struct StoreResult {
+pub struct ObjectStoreResult {
 
 }
 
